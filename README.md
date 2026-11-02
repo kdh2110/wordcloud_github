@@ -9,7 +9,7 @@ Colab용 `author_keyword_wordcloud_v8.4_citations_fixed.ipynb`의 분석 모듈�
 3. 브랜치 `main`, `input_path`는 `data/example.xlsx`, `mode`는 `sample`, `config_path`는 `config.json` 그대로 실행합니다.
 4. `publish_pages`를 켜면 실행마다 새 결과 주소가 생깁니다. 완료된 실행의 **Summary → deploy → 이용자에게 전달할 결과 링크**에서 주소를 복사하세요. `github-pages` 배포 링크에서도 해당 결과를 열 수 있습니다.
 5. 실행 완료 후 **Artifacts**의 `wordcloud-sample-실행번호`를 다운로드합니다.
-6. 일반 압축 풀기로 열면 `sample/analysis.xlsx`와 `v8_4_sample_results.zip` 등이 있습니다. 비밀번호나 7-Zip은 필요하지 않습니다.
+6. 한 번 압축을 풀면 `analysis.xlsx`, `paper_explorer.html`, 이미지와 자산 폴더가 바로 나옵니다. 중복된 내부 ZIP은 없습니다. 비밀번호나 7-Zip은 필요하지 않습니다.
 
 
 `data/example.xlsx`는 실제 논문이 아닌 한·영문 가상 데이터 6건입니다.
@@ -89,9 +89,9 @@ GitHub에서 `config.json`을 편집하고 커밋한 후 다시 실행합니다.
 - `analysis.xlsx`: 빈도·DF·IDF·피인용 비교, 오류 및 실행정보 시트
 - `wordcloud_no_idf.png`, `wordcloud_idf.png`, `wordcloud_citation.png`, `wordcloud_citation_idf.png`
 - `paper_explorer.html` + `paper_explorer_assets/data.js`, `images.js`: 검색·정렬·표현 클릭·논문 연결·이미지 다운로드
-- `v8_4_<mode>_results.zip`: 위 파일의 묶음
+- `v8_4_<mode>_results.zip`: 로컬 실행용 묶음. Actions 다운로드에는 중복을 피하려고 포함하지 않습니다.
 
-다운로드한 결과 안에는 `sample/` 또는 `full/` 원본 결과 폴더도 있습니다. `sample/`만 따로 받았다면 그 안의 HTML을 열어도 됩니다. 분석 오류가 기록되거나 필수 이미지가 없으면 Actions는 실패로 표시됩니다. 생성된 진단 결과는 실패한 실행에서도 업로드합니다(설치 단계 실패 등으로 결과가 없으면 업로드 없음).
+Actions 다운로드는 결과 파일만 담습니다. 한 번 압축을 풀고 `paper_explorer.html`을 열면 됩니다. 로컬 실행에서는 결과가 `output/sample/` 또는 `output/full/`에 저장되고 별도 ZIP도 생성됩니다. 분석 오류가 기록되거나 필수 이미지가 없으면 Actions는 실패로 표시됩니다. 생성된 진단 결과는 실패한 실행에서도 업로드합니다(설치 단계 실패 등으로 결과가 없으면 업로드 없음).
 
 ## 로컬 실행 / 개발
 
