@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  actions: read
   pages: write
   id-token: write
 jobs:
@@ -15,6 +16,7 @@ jobs:
     uses: ./.github/workflows/analyze.yml
     permissions:
       contents: write
+      actions: read
       pages: write
       id-token: write
     with:
