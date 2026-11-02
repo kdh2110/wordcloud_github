@@ -1,11 +1,15 @@
 """Real English/Korean NLP, citation ranking, report and archive integration checks."""
+import functools
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
+from urllib.request import urlopen
 import zipfile
 
 from openpyxl import load_workbook
@@ -65,6 +69,35 @@ class PipelineTest(unittest.TestCase):
                     self.assertIsNone(z.testzip())
                     self.assertIn('paper_explorer_assets/images.js', z.namelist())
                     self.assertIn('paper_explorer.html', z.namelist())
+            # Serve under the same project subpath as GitHub Pages. All relative
+            # assets and both downloads must resolve to this analysis exactly.
+            site = tmp / 'web' / 'wordcloud_github'
+            build = subprocess.run([
+                sys.executable, str(ROOT / 'build_pages.py'), '--mode', 'full',
+                '--output-root', str(tmp / 'out'), '--site-dir', str(site)],
+                capture_output=True, text=True)
+            self.assertEqual(build.returncode, 0, build.stdout + build.stderr)
+            handler = functools.partial(SimpleHTTPRequestHandler, directory=str(tmp / 'web'))
+            with ThreadingHTTPServer(('127.0.0.1', 0), handler) as server:
+                thread = threading.Thread(target=server.serve_forever, daemon=True)
+                thread.start()
+                base = f'http://127.0.0.1:{server.server_port}/wordcloud_github/'
+                try:
+                    with urlopen(base) as response:
+                        index = response.read().decode()
+                    self.assertIn('href="results.zip" download', index)
+                    self.assertIn('href="analysis.xlsx" download', index)
+                    for path, original in [
+                        ('paper_explorer_assets/data.js', out / 'paper_explorer_assets/data.js'),
+                        ('paper_explorer_assets/images.js', out / 'paper_explorer_assets/images.js'),
+                        ('analysis.xlsx', out / 'analysis.xlsx'),
+                        ('results.zip', tmp / 'out/v8_4_full_results.zip')]:
+                        with urlopen(base + path) as response:
+                            self.assertEqual(response.read(), original.read_bytes())
+                finally:
+                    server.shutdown()
+                    thread.join()
+            self.assertTrue((site / '.nojekyll').is_file())
             # Reusing output must fail rather than packaging stale results.
             retry = subprocess.run([sys.executable, str(ROOT / 'run_analysis.py'),
                                     str(ROOT / 'data/example.xlsx'), '--mode', 'full',

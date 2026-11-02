@@ -16,12 +16,34 @@ on:
         description: '분석 설정 JSON 경로'
         type: string
         default: config.json
+      publish_pages:
+        description: '결과를 GitHub Pages에 공개 게시 (제목·초록·ZIP 포함)'
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      input_path:
+        type: string
+        default: data/example.xlsx
+      mode:
+        type: string
+        default: sample
+      config_path:
+        type: string
+        default: config.json
+      publish_pages:
+        type: boolean
+        default: true
 permissions:
   contents: read
+  pages: write
+  id-token: write
 jobs:
   analyze:
     runs-on: ubuntu-24.04
     timeout-minutes: 120
+    permissions:
+      contents: read
     env:
       MPLBACKEND: Agg
       INPUT_PATH: ${{ inputs.input_path }}
@@ -52,3 +74,31 @@ jobs:
           path: output/
           if-no-files-found: warn
           retention-days: 14
+      - name: Prepare Pages site and downloads
+        if: inputs.publish_pages
+        run: python build_pages.py --mode "$MODE"
+      - name: Upload Pages site
+        if: inputs.publish_pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
+  deploy:
+    if: inputs.publish_pages
+    needs: analyze
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
