@@ -7,7 +7,7 @@ Colab용 `author_keyword_wordcloud_v8.4_citations_fixed.ipynb`의 분석 모듈�
 1. 이 저장소의 **Actions** 탭을 엽니다. 비활성 상태라면 Actions를 활성화합니다.
 2. 왼쪽 **Analyze Excel** → **Run workflow**를 누릅니다.
 3. 브랜치 `main`, `input_path`는 `data/example.xlsx`, `mode`는 `sample`, `config_path`는 `config.json` 그대로 실행합니다.
-4. `publish_pages`를 켜면 [Pages에서 결과 보기](https://kdh2110.github.io/wordcloud_github/)로 게시됩니다. 실행 페이지의 `deploy` 작업 링크에서도 열 수 있습니다.
+4. `publish_pages`를 켜면 실행마다 새 결과 주소가 생깁니다. 완료된 실행의 **Summary → deploy → 이용자에게 전달할 결과 링크**에서 주소를 복사하세요. `github-pages` 배포 링크에서도 해당 결과를 열 수 있습니다.
 5. 실행 완료 후 **Artifacts**의 `wordcloud-sample-실행번호`를 다운로드합니다.
 6. 일반 압축 풀기로 열면 `sample/analysis.xlsx`와 `v8_4_sample_results.zip` 등이 있습니다. 비밀번호나 7-Zip은 필요하지 않습니다.
 
@@ -33,20 +33,29 @@ Colab용 `author_keyword_wordcloud_v8.4_citations_fixed.ipynb`의 분석 모듈�
 
 **데이터 공개 범위:** 공개 저장소에 올린 입력 Excel은 저장소에서 공개됩니다. Pages의 HTML/JS에도 화면을 표시하는 데 필요한 제목·초록·키워드 데이터가 담깁니다. ZIP·Excel 파일을 Pages에서 제거해도 화면 데이터 자체가 비공개로 바뀌지는 않습니다. 비공개 자료는 공개 저장소에 올리거나 Pages에 게시하지 마세요.
 
-## GitHub Pages에서 HTML 보기
+## 여러 이용자에게 서로 다른 결과 링크 전달하기
 
-처음 한 번 저장소 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 선택합니다.
+분석 코드는 `main`에 하나만 둡니다. 관리자에게 신청한 이용자마다 다음 작업을 반복하세요.
 
-**Actions → Analyze Excel → Run workflow**에서 `publish_pages`를 켜고 실행합니다(기본값: 켬).
+1. 이용자별 Excel을 다른 파일명으로 저장소에 업로드합니다. 예: `data/request-a.xlsx`, `data/request-b.xlsx`.
+2. **Actions → Analyze Excel → Run workflow**에서 해당 `input_path`, `sample`/`full`, 필요하면 별도의 `config_path`를 지정합니다. `publish_pages`를 켭니다.
+3. 실행 완료 후 **Summary**에서 `deploy` 작업의 **이용자에게 전달할 결과 링크**를 복사합니다.
+4. 해당 이용자에게 이 링크를 직접 전달합니다. 메일·문자 자동 발송이나 신청 접수 웹폼은 포함하지 않습니다.
 
-- 웹 주소: **https://kdh2110.github.io/wordcloud_github/**
-- 클릭형 워드클라우드·검색·정렬 화면과 필요한 JS 자산만 게시합니다.
-- Pages에는 ZIP·Excel 파일이나 해당 다운로드 링크를 넣지 않습니다. `/results.zip`, `/analysis.xlsx` 직접 URL로도 받을 수 없습니다.
-- 최근 배포에 성공한 화면이 사이트를 교체합니다. `publish_pages`를 끄면 기존 사이트를 변경하지 않습니다.
-- 기존 화면의 선택 논문 CSV·워드클라우드 이미지 저장 기능은 유지합니다.
-- 분석 실패 시 새 사이트를 게시하지 않습니다. Pages 배포와 결과 다운로드은 분리되어 있습니다.
+주소 예시: `https://kdh2110.github.io/wordcloud_github/results/32자리임의ID/`
 
-`Publish Pages example`은 `data/example.xlsx` 변경 시 예제를 게시합니다. 실제 결과를 게시한 뒤 이를 수동 실행하면 예제로 교체되므로 주의하세요.
+- 실행마다 새 ID가 생깁니다. 같은 파일을 다시 실행해도 새 주소가 생성됩니다.
+- 결과 A를 만든 뒤 B를 만들어도 A의 URL·HTML·데이터를 유지합니다. 최초 전환 시 기존 루트 주소의 화면도 보존합니다.
+- 공개 홈페이지에 다른 이용자의 결과 목록을 만들지 않습니다. 하지만 Pages와 `pages-data` 브랜치는 공개되므로 **고유 링크는 접근 권한이나 비공개 보장이 아닙니다.** 화면 데이터도 공개입니다.
+- ZIP·Excel은 Pages에 게시하지 않습니다. 기존 선택 논문 CSV·워드클라우드 이미지 저장 기능은 유지합니다.
+- `publish_pages`를 끄면 다운로드용 결과만 만들고, 기존 링크를 변경하지 않습니다.
+- Pages 최초 설정은 **Settings → Pages → Source: GitHub Actions**입니다.
+
+웹 결과는 `pages-data` 보관 브랜치의 `results/<ID>/`에 누적됩니다. 분석 코드 사본은 이 브랜치에 저장하지 않습니다. Actions Artifacts 보관 기간이 끝나도 결과 링크는 남습니다. 이 브랜치를 삭제하거나 강제로 덮어쓰지 마세요. Pages의 사이트 용량 제한(1GB)을 고려해 오래된 결과의 보관 정책을 별도로 정해야 합니다.
+
+동시 실행은 Git 업로드 충돌 시 최신 보관 브랜치를 다시 읽어 병합합니다. 배포는 누적된 최신 전체 사이트를 읽습니다. 많은 실행이 겹치면 GitHub의 배포 대기 작업 교체 때문에 일부 실행의 `deploy`가 취소될 수 있지만, 이미 보관된 결과는 다음 성공한 전체 배포에 포함됩니다. 배포 실패/취소 시 `pages-data`에 보관된 결과는 삭제되지 않습니다. 필요하면 배포 작업을 다시 실행하세요.
+
+`Publish Pages example`은 예제 파일/해당 워크플로 변경 시와 수동 실행 시 새 예제 링크를 만듭니다. 실제 이용자의 기존 링크는 교체하지 않습니다.
 
 ## ZIP·Excel 받기
 

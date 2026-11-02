@@ -4,16 +4,17 @@ on:
     branches: [main]
     paths:
       - data/example.xlsx
+      - .github/workflows/pages-example.yml
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 jobs:
   example:
     uses: ./.github/workflows/analyze.yml
     permissions:
-      contents: read
+      contents: write
       pages: write
       id-token: write
     with:
