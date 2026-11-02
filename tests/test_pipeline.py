@@ -9,6 +9,7 @@ import sys
 import tempfile
 import threading
 import unittest
+from urllib.error import HTTPError
 from urllib.request import urlopen
 import zipfile
 
@@ -70,7 +71,7 @@ class PipelineTest(unittest.TestCase):
                     self.assertIn('paper_explorer_assets/images.js', z.namelist())
                     self.assertIn('paper_explorer.html', z.namelist())
             # Serve under the same project subpath as GitHub Pages. All relative
-            # assets and both downloads must resolve to this analysis exactly.
+            # assets must resolve while ZIP/Excel URLs must not be published.
             site = tmp / 'web' / 'wordcloud_github'
             build = subprocess.run([
                 sys.executable, str(ROOT / 'build_pages.py'), '--mode', 'full',
@@ -85,15 +86,21 @@ class PipelineTest(unittest.TestCase):
                 try:
                     with urlopen(base) as response:
                         index = response.read().decode()
-                    self.assertIn('href="results.zip" download', index)
-                    self.assertIn('href="analysis.xlsx" download', index)
+                    self.assertNotIn('href="results.zip"', index)
+                    self.assertNotIn('href="analysis.xlsx"', index)
                     for path, original in [
                         ('paper_explorer_assets/data.js', out / 'paper_explorer_assets/data.js'),
-                        ('paper_explorer_assets/images.js', out / 'paper_explorer_assets/images.js'),
-                        ('analysis.xlsx', out / 'analysis.xlsx'),
-                        ('results.zip', tmp / 'out/v8_4_full_results.zip')]:
+                        ('paper_explorer_assets/images.js', out / 'paper_explorer_assets/images.js')]:
                         with urlopen(base + path) as response:
                             self.assertEqual(response.read(), original.read_bytes())
+                    for path in ['results.zip', 'analysis.xlsx', 'wordcloud_citation.png']:
+                        with self.assertRaises(HTTPError) as error:
+                            urlopen(base + path)
+                        self.assertEqual(error.exception.code, 404)
+                    self.assertEqual(
+                        {p.relative_to(site).as_posix() for p in site.rglob('*') if p.is_file()},
+                        {'index.html', 'paper_explorer.html', '.nojekyll',
+                         'paper_explorer_assets/data.js', 'paper_explorer_assets/images.js'})
                 finally:
                     server.shutdown()
                     thread.join()

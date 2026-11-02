@@ -3,7 +3,6 @@ on:
   push:
     branches: [main]
     paths:
-      - .github/workflows/pages-example.yml
       - data/example.xlsx
   workflow_dispatch:
 permissions:
@@ -17,6 +16,8 @@ jobs:
       contents: read
       pages: write
       id-token: write
+    secrets:
+      RESULTS_PASSWORD: ${{ secrets.RESULTS_PASSWORD }}
     with:
       input_path: data/example.xlsx
       mode: sample

@@ -6,3 +6,4 @@ nlp_cache/
 data/*.xlsx
 !data/example.xlsx
 site/
+admin-output/
