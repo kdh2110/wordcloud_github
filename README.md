@@ -61,6 +61,8 @@ Colab용 `author_keyword_wordcloud_v8.4_citations_fixed.ipynb`의 분석 모듈�
 
 **Actions → Analyze Excel → 완료된 실행 → Artifacts**에서 `wordcloud-모드-실행번호`를 다운로드하세요. 일반 압축 풀기로 열 수 있으며 비밀번호는 필요하지 않습니다. 보관 기간은 14일입니다.
 
+`github-pages`와 `new-result-site`는 배포 과정에서만 사용하는 임시 파일입니다. 성공한 실행이 끝나면 자동 삭제합니다. 다운로드 목록에는 분석 결과 `wordcloud-…`를 남깁니다. 실행 중이거나 실패한 작업의 임시 파일은 완료/재시도를 위해 보존합니다. 게시된 사이트와 기존 이용자 링크는 삭제하지 않습니다.
+
 공개 저장소에서는 일반 열람자도 Actions Artifacts를 다운로드할 수 있습니다. Pages에는 계속 HTML과 필요한 JS만 게시하며 ZIP·Excel은 올리지 않습니다.
 
 `RESULTS_PASSWORD` Secret은 더 이상 사용하지 않으므로 삭제해도 됩니다. 기존 암호화 파일은 자동 변환되지 않습니다. 새 방식으로 받으려면 **새 Run workflow**로 분석을 실행하세요(이전 실행 재시도는 예전 코드를 사용합니다).
