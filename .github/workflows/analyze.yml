@@ -21,9 +21,6 @@ on:
         type: boolean
         default: true
   workflow_call:
-    secrets:
-      RESULTS_PASSWORD:
-        required: false
     inputs:
       input_path:
         type: string
@@ -69,18 +66,13 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Analyze
         run: python run_analysis.py "$INPUT_PATH" --mode "$MODE" --config "$CONFIG_PATH"
-      - name: Encrypt administrator results
+      - name: Downloadable results
         if: ${{ !cancelled() }}
-        env:
-          RESULTS_PASSWORD: ${{ secrets.RESULTS_PASSWORD }}
-        run: python encrypt_results.py
-      - name: Downloadable encrypted results
-        if: ${{ !cancelled() && hashFiles('admin-output/admin-results.zip') != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: admin-results-${{ inputs.mode }}-${{ github.run_id }}
-          path: admin-output/admin-results.zip
-          if-no-files-found: error
+          name: wordcloud-${{ inputs.mode }}-${{ github.run_id }}
+          path: output/
+          if-no-files-found: warn
           retention-days: 14
       - name: Prepare HTML-only Pages site
         if: inputs.publish_pages

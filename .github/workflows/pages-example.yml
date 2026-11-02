@@ -16,8 +16,6 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    secrets:
-      RESULTS_PASSWORD: ${{ secrets.RESULTS_PASSWORD }}
     with:
       input_path: data/example.xlsx
       mode: sample
