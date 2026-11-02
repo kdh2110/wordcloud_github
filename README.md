@@ -2,34 +2,6 @@
 
 Colab용 `author_keyword_wordcloud_v8.4_citations_fixed.ipynb`의 분석 모듈을 Python 파일로 추출했습니다. 원본의 한국어 Okt·영어 spaCy 분석, 필드별 DF/IDF, 피인용 가중치, Excel 시트, 4종 PNG, 클릭형 HTML과 분리 자산을 유지합니다. Colab 업로드 창과 자동 다운로드 대신 **저장소의 Excel 파일 → 수동 Actions 실행 → 결과 다운로드 + GitHub Pages HTML 보기** 방식입니다. 별도 API 키는 필요하지 않습니다.
 
-## 파일과 폴더 설명
-
-| 파일·폴더 | 용도 |
-| --- | --- |
-| `author_keyword_pipeline_v8.py` | 논문 키프레이즈 추출, 점수 계산, Excel·워드클라우드·HTML 생성을 담당하는 핵심 분석 코드 |
-| `run_analysis.py` | 입력 Excel과 설정을 받아 분석을 실행하고 다운로드용 결과를 준비하는 실행 파일 |
-| `config.json` | 컬럼명, 피인용 가중치, 선정 기준, 색상·크기 등 분석 및 화면 설정 |
-| `requirements.txt` | 실행에 필요한 Python 패키지와 버전 목록 |
-| `build_pages.py` | 분석 결과에서 HTML과 웹 자산만 골라 Pages 게시용 파일 생성 |
-| `publish_site.py` | 이용자별 고유 폴더에 결과를 추가하고 기존 링크를 보존하는 게시 코드 |
-| `sanitize_pages.py` | 기존 단일 페이지를 이전할 때 HTML 자산만 보존하고 ZIP·Excel을 제외하는 보조 코드 |
-| `data/` | 분석할 Excel 파일을 두는 폴더 |
-| `data/example.xlsx` | 동작 확인용 가상 논문 예제 |
-| `data/scopus_20261020.xlsx` | 사용자가 업로드한 분석 입력 Excel |
-| `data/.gitkeep` | 데이터 폴더가 비어 있어도 Git에 유지하기 위한 표시 파일 |
-| `tests/` | 분석, 게시 파일, 여러 이용자 결과 보존 등을 검사하는 자동 테스트 |
-| `tests/test_pipeline.py` | 한·영문 분석, sample/full, 결과 파일과 HTML 자산 응답 검사 |
-| `tests/test_multisite.py` | 이용자별 결과 누적, 기존 링크 보존, 동시 게시 충돌 처리 검사 |
-| `tests/test_pages_migration.py` | 기존 화면을 이전하면서 다운로드 파일을 제외하는지 검사 |
-| `.github/workflows/analyze.yml` | 실제 Excel 분석·다운로드 결과 생성·개별 링크 게시 작업 |
-| `.github/workflows/pages-example.yml` | 예제 데이터로 분석과 게시를 시험하는 작업 |
-| `.github/workflows/cleanup-deployment-artifacts.yml` | 성공한 실행의 임시 배포 다운로드 파일을 자동 정리하는 작업 |
-| `.github/workflows/test.yml` | 코드를 변경할 때 자동 테스트를 실행하는 작업 |
-| `.gitignore` | 임시 파일·캐시·생성 결과 등이 저장소에 올라가지 않도록 제외하는 목록 |
-| `README.md` | 사용 방법과 파일별 역할을 설명하는 이 문서 |
-
-`pages-data`는 이용자별 HTML 결과를 보관하는 별도 브랜치입니다. 분석 코드는 `main`에서 관리합니다. GitHub 파일 목록 오른쪽의 문구는 파일 설명이 아니라 마지막 수정의 커밋 메시지입니다.
-
 ## 1. 예제로 먼저 실행하기
 
 1. 이 저장소의 **Actions** 탭을 엽니다. 비활성 상태라면 Actions를 활성화합니다.
